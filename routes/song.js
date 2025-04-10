@@ -27,6 +27,7 @@ router.get('/prueba', SongController.prueba)
 router.post('/save', check.auth, SongController.save)
 router.post('/upload', [check.auth, uploads.single('file0')], SongController.upload)
 router.get('/image/:file', SongController.image)
+router.get('/one/:id', check.auth, SongController.one)
 
 module.exports = {
     router

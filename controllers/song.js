@@ -87,8 +87,22 @@ const image = async (req, res) => {
   });
 }
 
+const one = async (req, res) => {
+    const songId = req.params.id;
+    try {
+        const song = await Song.findById(songId);
+        if (!song) {
+            return res.status(404).send({ message: 'Canción no encontrada' });
+        }
+        return res.status(200).send({ song });
+    } catch (error) {
+        return res.status(500).send({ message: 'Error al obtener la canción' });
+    }
+}
+
 module.exports = {
     save,
     upload,
     image,
+    one
 }

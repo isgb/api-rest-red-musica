@@ -100,9 +100,43 @@ const one = async (req, res) => {
     }
 }
 
+const list = async (req, res) => {
+    // Recoger el id del artista
+    const albumId = req.params.albumId;
+
+    // Comprobar si existe el álbum
+    if (!albumId || albumId == null) {
+      return res.status(404).send({
+        status: "error",
+        message: "El álbum no existe",
+      });
+    }
+
+    // Buscar las canciones
+    try {
+      const songs = await Song.find({ album: albumId })
+              .sort('track')
+              .populate({ path: 'album', populate: { path: 'artist'} })
+              .exec();
+      return res.status(200).send({ songs });
+    } catch (error) {
+      return res.status(500).send({
+        status: "error",
+        message: "Error al obtener las canciones",
+      });
+    }
+}
+
+const update = async (req,res) => {
+
+
+}
+
 module.exports = {
     save,
     upload,
     image,
-    one
+    one,
+    list,
+    update
 }

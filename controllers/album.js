@@ -1,4 +1,7 @@
 const Album = require('../models/album'); // Importar el modelo de Album
+const fs = require('fs'); // Importar el módulo fs para manejar archivos
+const path = require('path'); // Importar el módulo path para manejar rutas de archivos
+const mongoosePagination = require('mongoose-pagination'); // Importar el módulo de paginación de mongoose
 
 const save = async (req, res) => {
     // Recoger los datos del body

@@ -1,4 +1,5 @@
 const Album = require('../models/album'); // Importar el modelo de Album
+const Song = require('../models/song'); // Importar el modelo de Song
 const fs = require('fs'); // Importar el módulo fs para manejar archivos
 const path = require('path'); // Importar el módulo path para manejar rutas de archivos
 const mongoosePagination = require('mongoose-pagination'); // Importar el módulo de paginación de mongoose
@@ -211,11 +212,43 @@ const image = async (req, res) => {
   });
 }
 
+const remove = async (req, res) => {
+    // Recoger el id de la url
+    let albumId = req.params.id;
+
+    // Comprobar si existe el album
+    try {
+        const album = await Album.findById(albumId);
+        if (!album) {
+            return res.status(404).send({
+                status: 'error',
+                message: 'El album no existe'
+            });
+        }
+
+        // Eliminar el album de la base de datos
+        await Album.findByIdAndRemove(albumId);
+        // Eliminar las canciones del album
+        await Song.deleteMany({ album: albumId });
+        
+        return res.status(200).send({
+            status: 'success',
+            message: 'Album eliminado correctamente'
+        });
+    } catch (error) {
+        return res.status(500).send({
+            status: 'error',
+            message: 'Error al eliminar el album'
+        });
+    }
+}
+
 module.exports = {
     save,
     one,
     list,
     update,
     upload,
-    image   
+    image,
+    remove   
 }

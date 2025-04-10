@@ -128,8 +128,60 @@ const list = async (req, res) => {
 }
 
 const update = async (req,res) => {
+    // Recoger el id de la canción
+    const songId = req.params.id;
+    const update = req.body;
 
+    // Comprobar si existe el id
+    if (!songId || songId == null) {
+      return res.status(404).send({
+        status: "error",
+        message: "El id no existe",
+      });
+    }
 
+    // Actualizar la canción
+    try {
+      const songUpdated = await Song.findByIdAndUpdate(songId, update, {
+        new: true,
+      });
+      return res.status(200).send({
+        status: "success",
+        song: songUpdated,
+      });
+    } catch (error) {
+      return res.status(500).send({
+        status: "error",
+        message: "Error al actualizar la canción",
+      });
+    }
+}
+
+const remove = async (req, res) => {
+    // Recoger el id de la canción
+    const songId = req.params.id;
+
+    // Comprobar si existe el id
+    if (!songId || songId == null) {
+      return res.status(404).send({
+        status: "error",
+        message: "El id no existe",
+      });
+    }
+
+    // Eliminar la canción
+    try {
+      const songRemoved = await Song.findByIdAndRemove(songId);
+      return res.status(200).send({
+        status: "success",
+        song: songRemoved,
+      });
+    } catch (error) {
+      return res.status(500).send({
+        status: "error",
+        message: "Error al eliminar la canción",
+      });
+    }
 }
 
 module.exports = {
@@ -138,5 +190,6 @@ module.exports = {
     image,
     one,
     list,
-    update
+    update,
+    remove
 }

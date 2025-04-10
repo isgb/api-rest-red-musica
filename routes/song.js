@@ -29,6 +29,8 @@ router.post('/upload', [check.auth, uploads.single('file0')], SongController.upl
 router.get('/image/:file', SongController.image)
 router.get('/one/:id', check.auth, SongController.one)
 router.get('/list/:albumId', check.auth, SongController.list)
+router.put('/update/:id', check.auth, SongController.update)
+router.delete('/remove/:id', check.auth, SongController.remove)
 
 module.exports = {
     router

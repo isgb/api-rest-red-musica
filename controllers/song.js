@@ -28,7 +28,7 @@ const upload = async (req,res) =>{
   const extension = imageSplit[1];
 
   // Comprobar la extensión
-  const valid_extensions = ["png", "jpg", "jpeg", "gif"];
+  const valid_extensions = ["mp3", "ogg"];
   if (!valid_extensions.includes(extension)) {
     const filePath = req.file.path;
     const fileDeleted = fs.unlinkSync(filePath);
@@ -68,7 +68,7 @@ const upload = async (req,res) =>{
   }
 }
 
-const image = async (req, res) => {
+const audio = async (req, res) => {
   // Recoger el parámetro de la url
   const file = req.params.file;
 
@@ -187,7 +187,7 @@ const remove = async (req, res) => {
 module.exports = {
     save,
     upload,
-    image,
+    audio,
     one,
     list,
     update,

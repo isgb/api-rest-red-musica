@@ -134,9 +134,85 @@ const update = async (req, res) => {
     }
 }
 
+const upload = async (req,res) =>{
+
+  if(!req.file) {
+    return res.status(400).send({
+      status: "error",
+      message: "No se han subido archivos",
+    });
+  }
+
+  let image = req.file.originalname;
+
+  const imageSplit = image.split("\.");
+  const extension = imageSplit[1];
+
+  // Comprobar la extensión
+  const valid_extensions = ["png", "jpg", "jpeg", "gif"];
+  if (!valid_extensions.includes(extension)) {
+    const filePath = req.file.path;
+    const fileDeleted = fs.unlinkSync(filePath);
+
+    return res.status(400).send({
+      status: "error",
+      message: "La extensión no es válida",
+    });
+  }
+
+  //Si es correcta, guardar imagen en la base de datos
+  try {
+    const albumUpdated = await Album.findByIdAndUpdate(
+      {_id:req.user.id},
+      { image: req.file.filename },
+      { new: true }
+    );
+
+    if (!albumUpdated) {
+      return res.status(500).send({
+        status: "error",
+        message: "Error al guardar la imagen decla canción",
+      });
+    }
+
+    return res.status(200).send({
+      status: "success",
+      album: albumUpdated,
+      file: req.file,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status: "error",
+      message: "Error al guardar la imagen de la canción",
+      error: err,
+    });
+  }
+}
+
+const image = async (req, res) => {
+  // Recoger el parámetro de la url
+  const file = req.params.file;
+
+  // Comprobar si existe el fichero
+  const filePath = "./uploads/albums/" + file;
+  fs.stat(filePath, (err, exists) => {
+    if (err || !exists) {
+      return res.status(404).send({
+        status: "error",
+        message: "No existe la imagen",
+      });
+    }
+
+    // Devolver el archivo
+    return res.sendFile(path.resolve(filePath));
+  });
+}
+
 module.exports = {
     save,
     one,
     list,
-    update
+    update,
+    upload,
+    image   
 }
